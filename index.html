@@ -1,41 +1,634 @@
-<!DOCTYPE html><html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080d1b">
-  <title>NEXORA AI</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#080d0b">
+    <meta name="description"
+          content="NEXORA AI - مرکز ابزارهای هوش مصنوعی">
+
+    <title>NEXORA AI | AI Universe</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <script src="app.js" defer></script>
 </head>
+
 <body>
-  <header class="header">
-    <div class="logo">NEXORA <span>AI</span></div>
-    <div class="status">● هوش مصنوعی شما</div>
-  </header>  <main class="container">
-    <section class="hero">
-      <div class="badge">✦ نسل جدید هوش مصنوعی</div>
-      <h1>به <span>NEXORA AI</span> خوش آمدی</h1>
-      <p>ابزار هوشمند مناسب کار، یادگیری و زندگی روزمره‌ات را پیدا کن.</p>
-      <input id="search" type="search" placeholder="دنبال چه هوش مصنوعی می‌گردی؟">
-    </section><section class="categories">
-  <h2>دسته‌بندی ابزارها</h2>
-  <div class="grid">
-    <button class="card" data-category="chat">💬<b>چت و گفتگو</b><small>دستیارهای هوشمند</small></button>
-    <button class="card" data-category="image">🎨<b>ساخت تصویر</b><small>طراحی و هنر دیجیتال</small></button>
-    <button class="card" data-category="video">🎬<b>ساخت ویدیو</b><small>ویدیو و انیمیشن</small></button>
-    <button class="card" data-category="study">📚<b>آموزش و درس</b><small>یادگیری هوشمند</small></button>
-    <button class="card" data-category="code">💻<b>برنامه‌نویسی</b><small>کدنویسی و توسعه</small></button>
-    <button class="card" data-category="home">🏠<b>لوازم خانگی هوشمند</b><small>خانه و زندگی</small></button>
-    <button class="card" data-category="audio">🎵<b>موسیقی و صدا</b><small>صوت و آهنگ</small></button>
-    <button class="card" data-category="work">📊<b>کار و کسب‌وکار</b><small>افزایش بهره‌وری</small></button>
-  </div>
-</section>
 
-<section class="results">
-  <h2 id="resultTitle">ابزارهای پیشنهادی</h2>
-  <div id="tools" class="tool-list"></div>
-</section>
+<div class="app-shell">
 
-  </main>  <footer> NEXORA AI · دنیای ابزارهای هوشمند </footer>
-  <script src="app.js"></script>
+    <!-- نوار کناری -->
+    <aside class="sidebar">
+
+        <a href="#" class="brand">
+            <span class="brand-icon">N</span>
+
+            <span class="brand-text">
+                <strong>NEXORA</strong>
+                <small>ARTIFICIAL INTELLIGENCE</small>
+            </span>
+        </a>
+
+        <div class="sidebar-label">منوی اصلی</div>
+
+        <nav class="side-nav">
+
+            <a href="#home" class="nav-item active">
+                <span>⌂</span>
+                <span>خانه</span>
+            </a>
+
+            <a href="#explore" class="nav-item">
+                <span>⌕</span>
+                <span>کشف ابزارها</span>
+            </a>
+
+            <a href="#favorites" class="nav-item">
+                <span>☆</span>
+                <span>علاقه‌مندی‌ها</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-label">دسترسی سریع</div>
+
+        <nav class="side-nav">
+
+            <a href="#chat" class="nav-item">
+                <span>◈</span>
+                <span>دستیار هوشمند</span>
+            </a>
+
+            <a href="#image" class="nav-item">
+                <span>▧</span>
+                <span>تولید تصویر</span>
+            </a>
+
+            <a href="#code" class="nav-item">
+                <span>⌘</span>
+                <span>برنامه‌نویسی</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="status-dot"></span>
+            <span>مرکز ابزارهای هوش مصنوعی</span>
+        </div>
+
+    </aside>
+
+
+    <!-- محتوای اصلی -->
+    <main class="main-content" id="home">
+
+        <!-- سربرگ -->
+        <header class="topbar">
+
+            <button class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="باز کردن منو">
+                ☰
+            </button>
+
+            <div class="breadcrumb">
+                <span>NEXORA</span>
+                <span>/</span>
+                <strong>داشبورد</strong>
+            </div>
+
+            <a href="#explore" class="topbar-button">
+                + <span>کشف ابزارها</span>
+            </a>
+
+        </header>
+
+
+        <!-- بخش خوش‌آمدگویی -->
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    <span class="status-dot"></span>
+                    فضای هوشمند شما
+                </div>
+
+                <h1>
+                    به دنیای
+                    <span class="gradient-text">NEXORA AI</span>
+                    خوش آمدی
+                </h1>
+
+                <p>
+                    ابزار مناسب را پیدا کن، ایده‌هایت را توسعه بده
+                    و از قدرت هوش مصنوعی استفاده کن.
+                </p>
+
+                <a href="#explore" class="primary-button">
+                    کشف دنیای هوش مصنوعی
+                    <span>←</span>
+                </a>
+
+            </div>
+
+            <div class="hero-visual" aria-hidden="true">
+
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+
+                <div class="core">
+                    <span>N</span>
+                </div>
+
+                <span class="floating-symbol symbol-one">AI</span>
+                <span class="floating-symbol symbol-two">✳</span>
+                <span class="floating-symbol symbol-three">⌘</span>
+
+            </div>
+
+        </section>
+
+
+        <!-- جست‌وجو -->
+        <section class="search-section" id="explore">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">SMART DISCOVERY</span>
+                    <h2>دنبال چه ابزاری هستی؟</h2>
+                </div>
+
+                <span class="section-symbol">⌕</span>
+            </div>
+
+            <div class="search-box">
+
+                <span class="search-icon">⌕</span>
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="نام ابزار یا کاربرد آن را بنویس..."
+                    aria-label="جست‌وجوی ابزارهای هوش مصنوعی"
+                    autocomplete="off">
+
+                <kbd>جست‌وجو</kbd>
+
+            </div>
+
+            <p class="search-hint">
+                برای مثال: ساخت عکس، برنامه‌نویسی، درس یا موسیقی
+            </p>
+
+        </section>
+
+
+        <!-- دسته‌بندی‌ها -->
+        <section class="categories-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">CATEGORIES</span>
+                    <h2>دسته‌بندی ابزارها</h2>
+                </div>
+
+                <span class="section-caption">
+                    حوزهٔ موردنظرت را انتخاب کن
+                </span>
+            </div>
+
+
+            <div class="category-grid">
+
+                <button class="category-card"
+                        data-category="chat"
+                        type="button">
+                    <span class="category-icon icon-green">◈</span>
+                    <strong>چت و دستیار</strong>
+                    <small>گفت‌وگو و پاسخ‌گویی</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="image"
+                        type="button">
+                    <span class="category-icon icon-purple">▧</span>
+                    <strong>تولید تصویر</strong>
+                    <small>خلق تصاویر خلاقانه</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="video"
+                        type="button">
+                    <span class="category-icon icon-blue">▷</span>
+                    <strong>تولید ویدئو</strong>
+                    <small>ساخت و ویرایش ویدئو</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="study"
+                        type="button">
+                    <span class="category-icon icon-orange">⌁</span>
+                    <strong>آموزش و درس</strong>
+                    <small>یادگیری و حل تمرین</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="code"
+                        type="button">
+                    <span class="category-icon icon-cyan">⌘</span>
+                    <strong>برنامه‌نویسی</strong>
+                    <small>کدنویسی و توسعه</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="audio"
+                        type="button">
+                    <span class="category-icon icon-pink">♫</span>
+                    <strong>موسیقی و صدا</strong>
+                    <small>آهنگ و تولید صدا</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="home"
+                        type="button">
+                    <span class="category-icon icon-yellow">⌂</span>
+                    <strong>خانه هوشمند</strong>
+                    <small>مدیریت دستگاه‌ها</small>
+                </button>
+
+                <button class="category-card"
+                        data-category="work"
+                        type="button">
+                    <span class="category-icon icon-green">▤</span>
+                    <strong>کار و بهره‌وری</strong>
+                    <small>مدیریت کارها و پروژه‌ها</small>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ابزارهای منتخب -->
+        <section class="tools-section" id="favorites">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-kicker">AI TOOLBOX</span>
+                    <h2 id="toolsHeading">ابزارهای منتخب</h2>
+                </div>
+
+                <span class="section-caption" id="toolsCount">
+                    ابزارهای کاربردی
+                </span>
+
+            </div>
+
+
+            <div class="tools-grid" id="toolsGrid">
+
+                <!-- دستیارهای هوشمند -->
+                <article class="tool-card"
+                         data-category="chat"
+                         data-search="chatgpt چت جی پی تی گفتگو نوشتن پاسخ">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">✳</div>
+                        <span class="tool-tag">دستیار</span>
+                    </div>
+
+                    <h3>ChatGPT</h3>
+
+                    <p>
+                        دستیار هوشمند برای گفت‌وگو، یادگیری،
+                        نوشتن و ایده‌پردازی.
+                    </p>
+
+                    <a href="https://chatgpt.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <article class="tool-card"
+                         data-category="chat"
+                         data-search="gemini جمینای گوگل دستیار هوشمند">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">✧</div>
+                        <span class="tool-tag">دستیار</span>
+                    </div>
+
+                    <h3>Google Gemini</h3>
+
+                    <p>
+                        دستیار هوش مصنوعی گوگل برای
+                        پاسخ‌گویی و انجام کارهای مختلف.
+                    </p>
+
+                    <a href="https://gemini.google.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <article class="tool-card"
+                         data-category="chat"
+                         data-search="copilot کوپایلت مایکروسافت دستیار">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">◉</div>
+                        <span class="tool-tag">دستیار</span>
+                    </div>
+
+                    <h3>Microsoft Copilot</h3>
+
+                    <p>
+                        دستیار هوشمند برای پرسش‌وپاسخ
+                        و کمک به کارهای روزانه.
+                    </p>
+
+                    <a href="https://copilot.microsoft.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- تولید تصویر -->
+                <article class="tool-card"
+                         data-category="image"
+                         data-search="adobe firefly ادوبی فایرفلای تصویر طراحی">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">▧</div>
+                        <span class="tool-tag">تصویر</span>
+                    </div>
+
+                    <h3>Adobe Firefly</h3>
+
+                    <p>
+                        ابزارهای هوش مصنوعی برای
+                        خلق و ویرایش محتوای تصویری.
+                    </p>
+
+                    <a href="https://firefly.adobe.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <article class="tool-card"
+                         data-category="image"
+                         data-search="canva کانوا طراحی پوستر عکس">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">✿</div>
+                        <span class="tool-tag">طراحی</span>
+                    </div>
+
+                    <h3>Canva</h3>
+
+                    <p>
+                        ساخت طرح‌های گرافیکی، پوستر،
+                        ارائه و محتوای تصویری.
+                    </p>
+
+                    <a href="https://www.canva.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- ویدئو -->
+                <article class="tool-card"
+                         data-category="video"
+                         data-search="runway رانوی ساخت ویدئو هوش مصنوعی">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">▷</div>
+                        <span class="tool-tag">ویدئو</span>
+                    </div>
+
+                    <h3>Runway</h3>
+
+                    <p>
+                        ابزارهای هوش مصنوعی برای
+                        تولید و ویرایش ویدئو.
+                    </p>
+
+                    <a href="https://runwayml.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- آموزش -->
+                <article class="tool-card"
+                         data-category="study"
+                         data-search="khan academy خان آکادمی آموزش ریاضی درس">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">⌁</div>
+                        <span class="tool-tag">آموزش</span>
+                    </div>
+
+                    <h3>Khan Academy</h3>
+
+                    <p>
+                        یادگیری موضوعات درسی با
+                        درس‌ها و تمرین‌های آموزشی.
+                    </p>
+
+                    <a href="https://www.khanacademy.org/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- برنامه نویسی -->
+                <article class="tool-card"
+                         data-category="code"
+                         data-search="github گیت هاب برنامه نویسی پروژه کدنویسی">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">⌘</div>
+                        <span class="tool-tag">کدنویسی</span>
+                    </div>
+
+                    <h3>GitHub</h3>
+
+                    <p>
+                        میزبانی پروژه‌های نرم‌افزاری،
+                        مدیریت کد و همکاری تیمی.
+                    </p>
+
+                    <a href="https://github.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- موسیقی -->
+                <article class="tool-card"
+                         data-category="audio"
+                         data-search="suno سونو ساخت آهنگ موسیقی صدا">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">♫</div>
+                        <span class="tool-tag">موسیقی</span>
+                    </div>
+
+                    <h3>Suno</h3>
+
+                    <p>
+                        ساخت موسیقی و آهنگ با کمک
+                        هوش مصنوعی.
+                    </p>
+
+                    <a href="https://suno.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- خانه هوشمند -->
+                <article class="tool-card"
+                         data-category="home"
+                         data-search="home assistant خانه هوشمند کنترل دستگاه ها">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">⌂</div>
+                        <span class="tool-tag">خانه هوشمند</span>
+                    </div>
+
+                    <h3>Home Assistant</h3>
+
+                    <p>
+                        مدیریت و یکپارچه‌سازی دستگاه‌های
+                        سازگار خانهٔ هوشمند.
+                    </p>
+
+                    <a href="https://www.home-assistant.io/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+                <!-- بهره وری -->
+                <article class="tool-card"
+                         data-category="work"
+                         data-search="zapier زپیر اتوماسیون کار اتصال برنامه ها">
+
+                    <div class="tool-card-top">
+                        <div class="tool-icon">⟳</div>
+                        <span class="tool-tag">بهره‌وری</span>
+                    </div>
+
+                    <h3>Zapier</h3>
+
+                    <p>
+                        اتصال برنامه‌های مختلف و
+                        خودکارسازی بعضی کارهای تکراری.
+                    </p>
+
+                    <a href="https://zapier.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="tool-link">
+                        ورود به ابزار <span>←</span>
+                    </a>
+
+                </article>
+
+
+            </div>
+
+
+            <div class="empty-state" id="emptyState" hidden>
+                <span>⌕</span>
+                <h3>ابزاری پیدا نشد</h3>
+                <p>
+                    عبارت دیگری جست‌وجو کن یا دسته‌بندی
+                    دیگری را انتخاب کن.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- پاورقی -->
+        <footer class="footer">
+
+            <div class="footer-brand">
+                <span class="brand-icon">N</span>
+                <strong>NEXORA AI</strong>
+            </div>
+
+            <p>
+                یک مسیر ساده‌تر برای کشف دنیای هوش مصنوعی.
+            </p>
+
+            <span class="footer-version">
+                AI UNIVERSE · WEB EDITION
+            </span>
+
+        </footer>
+
+    </main>
+
+</div>
+
 </body>
 </html>
