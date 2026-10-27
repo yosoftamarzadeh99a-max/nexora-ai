@@ -1,142 +1,166 @@
-const aiTools = [
-{
-name: "ChatGPT",
-category: "chat",
-description: "دستیار هوشمند برای گفتگو، یادگیری و نوشتن.",
-url: "https://chatgpt.com/"
-},
-{
-name: "Google Gemini",
-category: "chat",
-description: "دستیار هوش مصنوعی گوگل.",
-url: "https://gemini.google.com/"
-},
-{
-name: "Microsoft Copilot",
-category: "chat",
-description: "دستیار هوشمند مایکروسافت.",
-url: "https://copilot.microsoft.com/"
-},
-{
-name: "Adobe Firefly",
-category: "image",
-description: "ابزارهای هوش مصنوعی برای ساخت و ویرایش تصویر.",
-url: "https://firefly.adobe.com/"
-},
-{
-name: "Canva AI",
-category: "image",
-description: "ابزارهای طراحی و تولید محتوای تصویری.",
-url: "https://www.canva.com/"
-},
-{
-name: "Runway",
-category: "video",
-description: "ابزارهای هوش مصنوعی برای تولید و ویرایش ویدیو.",
-url: "https://runwayml.com/"
-},
-{
-name: "Khan Academy",
-category: "study",
-description: "منابع آموزشی و ابزارهای یادگیری.",
-url: "https://www.khanacademy.org/"
-},
-{
-name: "GitHub Copilot",
-category: "code",
-description: "دستیار برنامه‌نویسی برای نوشتن و بررسی کد.",
-url: "https://github.com/features/copilot"
-},
-{
-name: "Suno",
-category: "audio",
-description: "ابزار هوش مصنوعی برای ساخت موسیقی.",
-url: "https://suno.com/"
-},
-{
-name: "Zapier",
-category: "work",
-description: "خودکارسازی کارها و اتصال سرویس‌های مختلف.",
-url: "https://zapier.com/"
-},
-{
-name: "Smart Home Guide",
-category: "home",
-description: "راهنمای آشنایی با خانه هوشمند و ابزارهای مرتبط.",
-url: "https://www.home-assistant.io/"
-}
-];
+"use strict";
 
-const toolsContainer = document.getElementById("tools");
-const searchInput = document.getElementById("search");
-const resultTitle = document.getElementById("resultTitle");
-const categoryButtons = document.querySelectorAll("[data-category]");
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("searchInput");
+    const toolsGrid = document.getElementById("toolsGrid");
+    const toolsHeading = document.getElementById("toolsHeading");
+    const toolsCount = document.getElementById("toolsCount");
+    const emptyState = document.getElementById("emptyState");
+    const categoryCards = document.querySelectorAll(".category-card");
+    const toolCards = document.querySelectorAll(".tool-card");
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".sidebar");
 
-let selectedCategory = "all";
+    let selectedCategory = "all";
 
-function renderTools() {
-const query = searchInput.value.trim().toLowerCase();
+    const categoryNames = {
+        all: "همه ابزارها",
+        chat: "چت و دستیار",
+        image: "تولید تصویر",
+        video: "تولید ویدئو",
+        study: "آموزش و درس",
+        code: "برنامه‌نویسی",
+        audio: "موسیقی و صدا",
+        home: "خانه هوشمند",
+        work: "کار و بهره‌وری"
+    };
 
-const filteredTools = aiTools.filter(tool => {
-const matchesCategory =
-selectedCategory === "all" ||
-tool.category === selectedCategory;
+    function normalizeText(value) {
+        return String(value || "")
+            .toLowerCase()
+            .replace(/[يى]/g, "ی")
+            .replace(/ك/g, "ک")
+            .replace(/\u200c/g, " ")
+            .trim();
+    }
 
-const searchableText =
-  `${tool.name} ${tool.description} ${tool.category}`.toLowerCase();
+    function updateTools() {
+        const query = normalizeText(searchInput.value);
+        let visibleCount = 0;
 
-return matchesCategory && searchableText.includes(query);
+        toolCards.forEach((card) => {
+            const category = card.dataset.category || "";
+            const searchData = normalizeText(
+                card.innerText + " " + (card.dataset.search || "")
+            );
 
+            const matchesCategory =
+                selectedCategory === "all" ||
+                category === selectedCategory;
+
+            const matchesSearch =
+                query === "" || searchData.includes(query);
+
+            const visible = matchesCategory && matchesSearch;
+
+            card.hidden = !visible;
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        toolsHeading.textContent =
+            query !== ""
+                ? "نتایج جست‌وجو"
+                : categoryNames[selectedCategory] || "ابزارها";
+
+        toolsCount.textContent = visibleCount + " ابزار";
+
+        emptyState.hidden = visibleCount !== 0;
+        toolsGrid.hidden = visibleCount === 0;
+    }
+
+    function selectCategory(category) {
+        selectedCategory = category;
+
+        categoryCards.forEach((card) => {
+            const active = card.dataset.category === category;
+
+            card.classList.toggle("selected", active);
+            card.setAttribute("aria-pressed", String(active));
+        });
+
+        updateTools();
+
+        document.getElementById("favorites")
+            .scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+    }
+
+    categoryCards.forEach((card) => {
+        card.setAttribute("aria-pressed", "false");
+
+        card.addEventListener("click", () => {
+            const category = card.dataset.category;
+
+            if (category) {
+                selectCategory(category);
+            }
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener("input", updateTools);
+
+        searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                searchInput.value = "";
+                updateTools();
+                searchInput.blur();
+            }
+        });
+    }
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener("click", () => {
+            const isOpen = sidebar.classList.toggle("open");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+        });
+
+        sidebar.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => {
+                sidebar.classList.remove("open");
+                menuToggle.setAttribute("aria-expanded", "false");
+            });
+        });
+
+        document.addEventListener("click", (event) => {
+            const clickedInsideSidebar =
+                sidebar.contains(event.target);
+
+            const clickedMenu =
+                menuToggle.contains(event.target);
+
+            if (
+                window.innerWidth <= 760 &&
+                !clickedInsideSidebar &&
+                !clickedMenu
+            ) {
+                sidebar.classList.remove("open");
+                menuToggle.setAttribute("aria-expanded", "false");
+            }
+        });
+    }
+
+    // پیوندهای منوی کناری
+    document.querySelectorAll(".nav-item").forEach((link) => {
+        link.addEventListener("click", () => {
+            document.querySelectorAll(".nav-item")
+                .forEach((item) => {
+                    item.classList.remove("active");
+                });
+
+            link.classList.add("active");
+        });
+    });
+
+    // شروع با نمایش تمام ابزارها
+    updateTools();
 });
-
-toolsContainer.replaceChildren();
-
-if (filteredTools.length === 0) {
-const message = document.createElement("p");
-message.className = "empty";
-message.textContent = "ابزاری پیدا نشد؛ عبارت دیگری جستجو کن.";
-toolsContainer.appendChild(message);
-return;
-}
-
-filteredTools.forEach(tool => {
-const card = document.createElement("article");
-card.className = "tool-item";
-
-const heading = document.createElement("h3");
-heading.textContent = tool.name;
-
-const description = document.createElement("p");
-description.textContent = tool.description;
-
-const link = document.createElement("a");
-link.href = tool.url;
-link.target = "_blank";
-link.rel = "noopener noreferrer";
-link.textContent = "ورود به ابزار ←";
-
-card.append(heading, description, link);
-toolsContainer.appendChild(card);
-
-});
-}
-
-categoryButtons.forEach(button => {
-button.addEventListener("click", () => {
-selectedCategory = button.dataset.category;
-resultTitle.textContent =
-button.querySelector("b").textContent;
-
-renderTools();
-
-document.querySelector(".results").scrollIntoView({
-  behavior: "smooth",
-  block: "start"
-});
-
-});
-});
-
-searchInput.addEventListener("input", renderTools);
-
-renderTools();
