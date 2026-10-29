@@ -1,166 +1,130 @@
 "use strict";
-
 document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("searchInput");
-    const toolsGrid = document.getElementById("toolsGrid");
-    const toolsHeading = document.getElementById("toolsHeading");
-    const toolsCount = document.getElementById("toolsCount");
-    const emptyState = document.getElementById("emptyState");
-    const categoryCards = document.querySelectorAll(".category-card");
-    const toolCards = document.querySelectorAll(".tool-card");
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebar = document.querySelector(".sidebar");
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+  const STORAGE_KEY = "nexora-ai-v1";
+  const defaultState = {favorites:[],note:"",tasks:[],flashcards:[],theme:"dark",chat:[]};
+  let state = loadState();
+  let selectedCategory = "all", deferredInstall = null, activeFlash = 0, showAnswer = false, toastTimer;
 
-    let selectedCategory = "all";
+  const tools = [
+    {id:"chatgpt",name:"ChatGPT",icon:"✧",category:"chat",tag:"دستیار",description:"گفت‌وگو، نوشتن، ایده‌پردازی و کمک در یادگیری.",url:"https://chatgpt.com/",search:"چت متن نوشتن سوال پاسخ هوش مصنوعی"},
+    {id:"gemini",name:"Google Gemini",icon:"✦",category:"chat",tag:"دستیار",description:"دستیار هوشمند گوگل برای تحقیق و کارهای روزمره.",url:"https://gemini.google.com/",search:"گوگل چت تحقیق"},
+    {id:"copilot",name:"Microsoft Copilot",icon:"◈",category:"chat",tag:"دستیار",description:"کمک هوشمند برای پرسش‌ها، متن و کارهای بهره‌وری.",url:"https://copilot.microsoft.com/",search:"مایکروسافت چت"},
+    {id:"firefly",name:"Adobe Firefly",icon:"▧",category:"image",tag:"تصویر",description:"ابزارهای خلاقانهٔ تولید و ویرایش تصویر.",url:"https://firefly.adobe.com/",search:"ادوبی عکس طراحی گرافیک"},
+    {id:"canva",name:"Canva AI",icon:"◩",category:"image",tag:"طراحی",description:"ساخت طرح، پوستر و محتوای تصویری.",url:"https://www.canva.com/",search:"کنوا پوستر طراحی عکس"},
+    {id:"runway",name:"Runway",icon:"▶",category:"video",tag:"ویدئو",description:"ابزارهای هوش مصنوعی برای ساخت و ویرایش ویدئو.",url:"https://runwayml.com/",search:"ویدیو فیلم تولید"},
+    {id:"khan",name:"Khan Academy",icon:"⌂",category:"study",tag:"آموزش",description:"یادگیری و تمرین موضوعات درسی.",url:"https://www.khanacademy.org/",search:"درس آموزش ریاضی مدرسه"},
+    {id:"github",name:"GitHub",icon:"⌘",category:"code",tag:"کدنویسی",description:"میزبانی کد، مدیریت نسخه و همکاری در پروژه‌ها.",url:"https://github.com/",search:"برنامه نویسی توسعه کد"},
+    {id:"suno",name:"Suno",icon:"♫",category:"audio",tag:"موسیقی",description:"ساخت موسیقی با ابزارهای هوش مصنوعی.",url:"https://suno.com/",search:"آهنگ صدا موزیک"},
+    {id:"zapier",name:"Zapier",icon:"⤳",category:"work",tag:"بهره‌وری",description:"اتصال برنامه‌ها و خودکارسازی کارهای تکراری.",url:"https://zapier.com/",search:"اتوماسیون کار مدیریت"},
+    {id:"notion",name:"Notion",icon:"▤",category:"work",tag:"بهره‌وری",description:"یادداشت، مستندات و مدیریت پروژه.",url:"https://www.notion.so/",search:"یادداشت برنامه ریزی مدیریت"}
+  ];
+  const categoryNames = {all:"همه ابزارها",chat:"چت و دستیار",image:"تولید تصویر",video:"تولید ویدئو",study:"آموزش و درس",code:"برنامه‌نویسی",audio:"موسیقی و صدا",work:"کار و بهره‌وری"};
 
-    const categoryNames = {
-        all: "همه ابزارها",
-        chat: "چت و دستیار",
-        image: "تولید تصویر",
-        video: "تولید ویدئو",
-        study: "آموزش و درس",
-        code: "برنامه‌نویسی",
-        audio: "موسیقی و صدا",
-        home: "خانه هوشمند",
-        work: "کار و بهره‌وری"
-    };
+  function loadState() {
+    try { return {...defaultState, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}")}; }
+    catch { return {...defaultState}; }
+  }
+  function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { toast("ذخیره‌سازی مرورگر در دسترس نیست."); } }
+  function normalize(v) { return String(v || "").toLocaleLowerCase("fa").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/\u200c/g," ").trim(); }
+  function toast(msg) { const el=$("#toast"); if(!el) return; el.textContent=msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove("show"),2400); }
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+  function toolCard(t) {
+    const fav=state.favorites.includes(t.id);
+    return `<article class="tool-card" data-tool-id="${t.id}" data-category="${t.category}">
+      <div class="tool-top"><span class="tool-icon" aria-hidden="true">${t.icon}</span><button class="favorite-button ${fav?"is-favorite":""}" data-favorite="${t.id}" aria-label="${fav?"حذف از":"افزودن به"} علاقه‌مندی‌ها" aria-pressed="${fav}">${fav?"♥":"♡"}</button></div>
+      <h3>${t.name}</h3><p>${t.description}</p><div class="tool-bottom"><span class="tool-tag">${t.tag}</span><a class="tool-open" href="${t.url}" target="_blank" rel="noopener noreferrer">باز کردن ابزار ↗</a></div></article>`;
+  }
+  function renderTools() {
+    const query=normalize($("#searchInput").value);
+    const filtered=tools.filter(t=>(selectedCategory==="all"||t.category===selectedCategory) && normalize([t.name,t.description,t.tag,t.search,categoryNames[t.category]].join(" ")).includes(query));
+    $("#toolsGrid").innerHTML=filtered.map(toolCard).join("");
+    $("#toolsCount").textContent=`${filtered.length} ابزار`;
+    $("#emptyState").hidden=filtered.length!==0;
+    $("#toolsGrid").hidden=filtered.length===0;
+    $$(".category-chip").forEach(b=>{const on=b.dataset.category===selectedCategory;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",String(on));});
+    renderFavorites();
+  }
+  function renderFavorites() {
+    const list=tools.filter(t=>state.favorites.includes(t.id));
+    $("#favoritesGrid").innerHTML=list.map(toolCard).join("");
+    $("#favoritesCount").textContent=`${list.length} مورد`;
+    $("#favoritesEmpty").hidden=list.length>0;
+    $("#favoritesGrid").hidden=list.length===0;
+  }
+  function renderTasks() {
+    $("#taskList").innerHTML=state.tasks.map((t,i)=>`<li class="task-item ${t.done?"done":""}"><input type="checkbox" data-task-toggle="${i}" ${t.done?"checked":""} aria-label="تغییر وضعیت کار"><span>${escapeHtml(t.text)}</span><button type="button" data-task-delete="${i}" aria-label="حذف کار">×</button></li>`).join("");
+  }
+  function renderCards() {
+    const c=state.flashcards;
+    if(!c.length){$("#flashcardViewer").innerHTML='<p class="muted">هنوز فلش‌کارتی نساخته‌ای.</p>';}
+    else {activeFlash=((activeFlash%c.length)+c.length)%c.length;const card=c[activeFlash];$("#flashcardViewer").innerHTML=`<div class="muted">کارت ${activeFlash+1} از ${c.length}</div><strong>${showAnswer?"پاسخ":"سؤال"}</strong><p>${escapeHtml(showAnswer?card.answer:card.question)}</p>`;}
+    $("#flipCard").disabled=!c.length;$("#nextCard").disabled=c.length<2;$("#deleteCard").disabled=!c.length;
+    $("#flipCard").textContent=showAnswer?"نمایش سؤال":"نمایش پاسخ";
+  }
+  function renderChat() {
+    const box=$("#chatMessages");
+    const saved=state.chat.slice(-30);
+    if(!saved.length)return;
+    box.innerHTML=saved.map(m=>`<div class="message ${m.role==="user"?"user-message":"assistant-message"}"><b>${m.role==="user"?"شما":"NEXORA"}</b><p>${escapeHtml(m.content)}</p></div>`).join("");
+    box.scrollTop=box.scrollHeight;
+  }
+  function renderAll() {
+    document.documentElement.classList.toggle("light-theme",state.theme==="light");
+    $("#noteInput").value=state.note;
+    renderTools();renderTasks();renderCards();renderChat();
+  }
+  function setPageLabel(hash) {
+    const names={home:"خانه",explore:"کشف ابزارها",favorites:"علاقه‌مندی‌ها",assistant:"دستیار هوشمند",workspace:"فضای کار",settings:"تنظیمات"};
+    $("#pageLabel").textContent=names[(hash||"#home").slice(1)]||"خانه";
+    $$(".nav-item").forEach(a=>a.classList.toggle("active",a.getAttribute("href")=== (hash||"#home")));
+  }
 
-    function normalizeText(value) {
-        return String(value || "")
-            .toLowerCase()
-            .replace(/[يى]/g, "ی")
-            .replace(/ك/g, "ک")
-            .replace(/\u200c/g, " ")
-            .trim();
-    }
-
-    function updateTools() {
-        const query = normalizeText(searchInput.value);
-        let visibleCount = 0;
-
-        toolCards.forEach((card) => {
-            const category = card.dataset.category || "";
-            const searchData = normalizeText(
-                card.innerText + " " + (card.dataset.search || "")
-            );
-
-            const matchesCategory =
-                selectedCategory === "all" ||
-                category === selectedCategory;
-
-            const matchesSearch =
-                query === "" || searchData.includes(query);
-
-            const visible = matchesCategory && matchesSearch;
-
-            card.hidden = !visible;
-
-            if (visible) {
-                visibleCount++;
-            }
-        });
-
-        toolsHeading.textContent =
-            query !== ""
-                ? "نتایج جست‌وجو"
-                : categoryNames[selectedCategory] || "ابزارها";
-
-        toolsCount.textContent = visibleCount + " ابزار";
-
-        emptyState.hidden = visibleCount !== 0;
-        toolsGrid.hidden = visibleCount === 0;
-    }
-
-    function selectCategory(category) {
-        selectedCategory = category;
-
-        categoryCards.forEach((card) => {
-            const active = card.dataset.category === category;
-
-            card.classList.toggle("selected", active);
-            card.setAttribute("aria-pressed", String(active));
-        });
-
-        updateTools();
-
-        document.getElementById("favorites")
-            .scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-    }
-
-    categoryCards.forEach((card) => {
-        card.setAttribute("aria-pressed", "false");
-
-        card.addEventListener("click", () => {
-            const category = card.dataset.category;
-
-            if (category) {
-                selectCategory(category);
-            }
-        });
-    });
-
-    if (searchInput) {
-        searchInput.addEventListener("input", updateTools);
-
-        searchInput.addEventListener("keydown", (event) => {
-            if (event.key === "Escape") {
-                searchInput.value = "";
-                updateTools();
-                searchInput.blur();
-            }
-        });
-    }
-
-    if (menuToggle && sidebar) {
-        menuToggle.addEventListener("click", () => {
-            const isOpen = sidebar.classList.toggle("open");
-
-            menuToggle.setAttribute(
-                "aria-expanded",
-                String(isOpen)
-            );
-        });
-
-        sidebar.querySelectorAll("a").forEach((link) => {
-            link.addEventListener("click", () => {
-                sidebar.classList.remove("open");
-                menuToggle.setAttribute("aria-expanded", "false");
-            });
-        });
-
-        document.addEventListener("click", (event) => {
-            const clickedInsideSidebar =
-                sidebar.contains(event.target);
-
-            const clickedMenu =
-                menuToggle.contains(event.target);
-
-            if (
-                window.innerWidth <= 760 &&
-                !clickedInsideSidebar &&
-                !clickedMenu
-            ) {
-                sidebar.classList.remove("open");
-                menuToggle.setAttribute("aria-expanded", "false");
-            }
-        });
-    }
-
-    // پیوندهای منوی کناری
-    document.querySelectorAll(".nav-item").forEach((link) => {
-        link.addEventListener("click", () => {
-            document.querySelectorAll(".nav-item")
-                .forEach((item) => {
-                    item.classList.remove("active");
-                });
-
-            link.classList.add("active");
-        });
-    });
-
-    // شروع با نمایش تمام ابزارها
-    updateTools();
+  $("#searchInput").addEventListener("input",renderTools);
+  $("#searchInput").addEventListener("keydown",e=>{if(e.key==="Escape"){e.target.value="";renderTools();e.target.blur();}});
+  $("#clearSearch").addEventListener("click",()=>{$("#searchInput").value="";selectedCategory="all";renderTools();});
+  $("#categoryRow").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(b){selectedCategory=b.dataset.category;renderTools();}});
+  document.addEventListener("click",e=>{
+    const fav=e.target.closest("[data-favorite]");
+    if(fav){const id=fav.dataset.favorite;state.favorites=state.favorites.includes(id)?state.favorites.filter(x=>x!==id):[...state.favorites,id];saveState();renderTools();}
+    const toggle=e.target.closest("[data-task-toggle]");
+    if(toggle){state.tasks[+toggle.dataset.taskToggle].done=toggle.checked;saveState();renderTasks();}
+    const del=e.target.closest("[data-task-delete]");
+    if(del){state.tasks.splice(+del.dataset.taskDelete,1);saveState();renderTasks();}
+  });
+  $("#menuToggle").addEventListener("click",()=>{const open=$("#sidebar").classList.toggle("open");$("#menuToggle").setAttribute("aria-expanded",String(open));});
+  $$(".nav-item").forEach(a=>a.addEventListener("click",()=>{$("#sidebar").classList.remove("open");$("#menuToggle").setAttribute("aria-expanded","false");setPageLabel(a.getAttribute("href"));}));
+  document.addEventListener("click",e=>{if(innerWidth<=760 && !$("#sidebar").contains(e.target) && !$("#menuToggle").contains(e.target)){$("#sidebar").classList.remove("open");$("#menuToggle").setAttribute("aria-expanded","false");}});
+  window.addEventListener("hashchange",()=>setPageLabel(location.hash));
+  $("#themeToggle").addEventListener("click",()=>{state.theme=state.theme==="light"?"dark":"light";saveState();renderAll();});
+  $("#saveNote").addEventListener("click",()=>{state.note=$("#noteInput").value;saveState();$("#noteStatus").textContent="یادداشت ذخیره شد.";toast("یادداشت ذخیره شد.");});
+  $("#taskForm").addEventListener("submit",e=>{e.preventDefault();const text=$("#taskInput").value.trim();if(!text)return;state.tasks.push({text,done:false});$("#taskInput").value="";saveState();renderTasks();});
+  $("#makePrompt").addEventListener("click",()=>{const subject=$("#promptSubject").value.trim();if(!subject){toast("اول موضوع تصویر را وارد کن.");$("#promptSubject").focus();return;}$("#promptOutput").value=`${subject}، سبک ${$("#promptStyle").value}، ترکیب‌بندی حرفه‌ای، نورپردازی دقیق، جزئیات بالا، کیفیت بالا، بدون نوشته و واترمارک`;$("#promptStatus").textContent="پرامپت ساخته شد؛ برای تولید تصویر آن را در یک ابزار تصویر وارد کن.";});
+  $("#copyPrompt").addEventListener("click",async()=>{const val=$("#promptOutput").value;if(!val){toast("اول پرامپت را بساز.");return;}try{await navigator.clipboard.writeText(val);$("#promptStatus").textContent="پرامپت کپی شد.";}catch{$("#promptOutput").select();const ok=document.execCommand("copy");$("#promptStatus").textContent=ok?"پرامپت کپی شد.":"متن را دستی کپی کن.";}});
+  $("#flashcardForm").addEventListener("submit",e=>{e.preventDefault();state.flashcards.push({question:$("#flashQuestion").value.trim(),answer:$("#flashAnswer").value.trim()});$("#flashQuestion").value="";$("#flashAnswer").value="";activeFlash=state.flashcards.length-1;showAnswer=false;saveState();renderCards();});
+  $("#flipCard").addEventListener("click",()=>{showAnswer=!showAnswer;renderCards();});
+  $("#nextCard").addEventListener("click",()=>{activeFlash++;showAnswer=false;renderCards();});
+  $("#deleteCard").addEventListener("click",()=>{if(!state.flashcards.length)return;state.flashcards.splice(activeFlash,1);showAnswer=false;saveState();renderCards();});
+  $("#chatForm").addEventListener("submit",async e=>{
+    e.preventDefault();const input=$("#chatInput"),message=input.value.trim();if(!message)return;
+    state.chat.push({role:"user",content:message});input.value="";saveState();renderChat();$("#sendMessage").disabled=true;
+    const status=$("#aiStatus");status.textContent="در حال اتصال…";
+    try{
+      const response=await fetch("./api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,history:state.chat.slice(-12).map(({role,content})=>({role,content}))})});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(data.error||"سرور هوش مصنوعی هنوز تنظیم نشده است.");
+      if(!data.reply)throw new Error("سرور پاسخی برنگرداند.");
+      state.chat.push({role:"assistant",content:data.reply});status.textContent="متصل";status.style.color="var(--green)";
+    }catch(err){state.chat.push({role:"assistant",content:`پاسخ هوش مصنوعی در دسترس نیست: ${err.message} برای فعال‌شدن گفت‌وگو، سرور را اجرا و کلید API را در فایل تنظیمات سرور وارد کن.`});status.textContent="نیازمند اتصال API";status.style.color="";}
+    finally{$("#sendMessage").disabled=false;saveState();renderChat();}
+  });
+  $("#exportData").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nexora-backup.json";a.click();URL.revokeObjectURL(url);$("#backupStatus").textContent="فایل پشتیبان ساخته شد.";});
+  $("#importData").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const imported=JSON.parse(await file.text());if(!imported||typeof imported!=="object")throw Error();state={...defaultState,...imported};saveState();renderAll();$("#backupStatus").textContent="پشتیبان بازیابی شد.";}catch{$("#backupStatus").textContent="فایل پشتیبان معتبر نیست.";}e.target.value="";});
+  $("#clearLocalData").addEventListener("click",()=>{if(!confirm("همه اطلاعات محلی NEXORA AI از این مرورگر حذف شود؟"))return;localStorage.removeItem(STORAGE_KEY);state={...defaultState};activeFlash=0;showAnswer=false;renderAll();$("#backupStatus").textContent="داده‌های محلی پاک شدند.";});
+  window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;$("#installButton").hidden=false;});
+  $("#installButton").addEventListener("click",async()=>{if(!deferredInstall){toast("از منوی مرورگر گزینهٔ Add to Home screen را بررسی کن.");return;}deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("#installButton").hidden=true;});
+  if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
+  if(location.protocol==="file:")$("#connectionStatus").textContent="پیش‌نمایش محلی";
+  setPageLabel(location.hash);renderAll();
 });
