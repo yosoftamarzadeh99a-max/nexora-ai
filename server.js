@@ -6,14 +6,18 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://yosoftamarzadeh99a-max.github.io"
+  ]
+}));
+
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/", (req, res) => {
   res.json({
-    name: "NEXORA AI Server",
-    status: "online",
-    chatConfigured: Boolean(process.env.AI_API_KEY)
+    name: "NEXORA AI",
+    status: "online"
   });
 });
 
@@ -25,15 +29,39 @@ app.post("/api/chat", async (req, res) => {
 
     if (!apiKey || !apiUrl || !model) {
       return res.status(503).json({
-        error: "سرور هنوز با ارائه‌دهندهٔ هوش مصنوعی تنظیم نشده است."
+        error: "تنظیمات هوش مصنوعی کامل نیست."
       });
     }
 
-    const messages = req.body?.messages;
+    const { message, history } = req.body || {};
 
-    if (!Array.isArray(messages) || messages.length === 0) {
+    if (typeof message !== "string" || !message.trim()) {
       return res.status(400).json({
-        error: "پیام معتبری ارسال نشده است."
+        error: "پیام معتبر نیست."
+      });
+    }
+
+    const messages = Array.isArray(history)
+      ? history
+          .filter(m =>
+            m &&
+            ["user", "assistant"].includes(m.role) &&
+            typeof m.content === "string"
+          )
+          .slice(-12)
+          .map(m => ({
+            role: m.role,
+            content: m.content.slice(0, 12000)
+          }))
+      : [{ role: "user", content: message }];
+
+    if (
+      !messages.length ||
+      messages[messages.length - 1].role !== "user"
+    ) {
+      messages.push({
+        role: "user",
+        content: message
       });
     }
 
@@ -46,38 +74,41 @@ app.post("/api/chat", async (req, res) => {
       body: JSON.stringify({
         model,
         messages
-      })
+      }),
+      signal: AbortSignal.timeout(60000)
     });
 
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      console.error("AI provider error:", response.status);
+      console.error("AI provider status:", response.status);
+
       return res.status(502).json({
-        error: "ارائه‌دهندهٔ هوش مصنوعی پاسخ موفقی نداد."
+        error: "سرویس هوش مصنوعی پاسخ موفقی نداد."
       });
     }
 
-    const reply =
-      data?.choices?.[0]?.message?.content ??
-      data?.output_text ??
-      null;
+    const reply = data?.choices?.[0]?.message?.content;
 
-    if (!reply) {
+    if (typeof reply !== "string" || !reply.trim()) {
       return res.status(502).json({
-        error: "پاسخ قابل‌خواندن از هوش مصنوعی دریافت نشد."
+        error: "پاسخ معتبر دریافت نشد."
       });
     }
 
-    return res.json({ reply });
+    return res.json({
+      reply: reply.trim()
+    });
+
   } catch (error) {
-    console.error("Chat request failed:", error.message);
+    console.error("Chat error:", error.message);
+
     return res.status(500).json({
-      error: "در ارتباط با سرویس هوش مصنوعی خطایی رخ داد."
+      error: "ارتباط با هوش مصنوعی با خطا مواجه شد."
     });
   }
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`NEXORA AI server listening on port ${PORT}`);
+  console.log(`NEXORA AI server running on port ${PORT}`);
 });
