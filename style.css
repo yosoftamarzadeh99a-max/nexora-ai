@@ -87,3 +87,80 @@
   background: #e5f4e9;
   color: #087b3a;
 }
+/* NEXORA AI - Complete Light Theme Fix */
+.light-theme .button:not(.button-primary) {
+  background: #e7f4eb;
+  color: #14552d;
+  border-color: #c5dfcd;
+}
+
+.light-theme .button:not(.button-primary):hover {
+  background: #d8efdf;
+  color: #0b4321;
+}
+
+.light-theme .button-quiet,
+.light-theme .icon-button {
+  background: #e7f4eb;
+  color: #14552d;
+  border-color: #c5dfcd;
+}
+
+.light-theme input,
+.light-theme textarea,
+.light-theme select,
+.light-theme .field {
+  background: #f8fcf9;
+  color: #173522;
+  border-color: #c5dfcd;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #718879;
+}
+
+.light-theme .panel,
+.light-theme .chat-panel,
+.light-theme .settings-panel {
+  background: #ffffff;
+  color: #173522;
+  border-color: #d4e4d8;
+}
+
+.light-theme .flashcard-viewer {
+  background: #f4faf6;
+  color: #173522;
+  border-color: #c5dfcd;
+}
+
+.light-theme .note-item {
+  background: #f8fcf9;
+  border-color: #d4e4d8;
+  color: #173522;
+}
+
+.light-theme .note-item button {
+  background: #e7f4eb;
+  color: #14552d;
+}
+
+.light-theme .task-item {
+  background: #f8fcf9;
+  color: #173522;
+}
+
+.light-theme .status-pill {
+  background: #fff7df;
+  color: #795c18;
+  border-color: #ead69b;
+}
+
+.light-theme .topbar {
+  border-color: #d4e4d8;
+}
+
+.light-theme .content-section,
+.light-theme .hero {
+  border-color: #d4e4d8;
+}
