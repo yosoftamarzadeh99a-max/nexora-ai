@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
             a.getAttribute("href") === currentHash
         )
     );
-  }
+  
   }
 
   $("#searchInput").addEventListener("input",renderTools);
