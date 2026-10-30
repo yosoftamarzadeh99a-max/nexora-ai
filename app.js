@@ -186,6 +186,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if(toggle){state.tasks[+toggle.dataset.taskToggle].done=toggle.checked;saveState();renderTasks();}
     const del=e.target.closest("[data-task-delete]");
     if(del){state.tasks.splice(+del.dataset.taskDelete,1);saveState();renderTasks();}
+    const noteDelete = e.target.closest("[data-note-delete]");
+if (noteDelete) {
+  state.notes.splice(Number(noteDelete.dataset.noteDelete), 1);
+  saveState();
+  renderNotes();
+  toast("یادداشت حذف شد.");
+}
   });
   $("#menuToggle").addEventListener("click",()=>{const open=$("#sidebar").classList.toggle("open");$("#menuToggle").setAttribute("aria-expanded",String(open));});
   $$(".nav-item").forEach(a=>a.addEventListener("click",()=>{$("#sidebar").classList.remove("open");$("#menuToggle").setAttribute("aria-expanded","false");setPageLabel(a.getAttribute("href"));}));
