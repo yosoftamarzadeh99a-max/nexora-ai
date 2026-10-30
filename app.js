@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     state.chat.push({role:"user",content:message});input.value="";saveState();renderChat();$("#sendMessage").disabled=true;
     const status=$("#aiStatus");status.textContent="در حال اتصال…";
     try{
-      const response=await fetch("https://nexora-ai-resz.onrender.com/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,history:state.chat.slice(-12).map(({role,content})=>({role,content}))})});
+      const response=await fetch(https://nexora-ai-1-y8x8.onrender.com/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,history:state.chat.slice(-12).map(({role,content})=>({role,content}))})});
       const data=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(data.error||"سرور هوش مصنوعی هنوز تنظیم نشده است.");
       if(!data.reply)throw new Error("سرور پاسخی برنگرداند.");
