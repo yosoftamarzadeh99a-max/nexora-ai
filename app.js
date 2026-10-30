@@ -134,11 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
     toast("تاریخچه پاک شد.");
   });
- } 
-  function renderAll() {
-    document.documentElement.classList.toggle("light-theme",state.theme==="light");
-    $("#noteInput").value=state.note;
-    renderTools();renderTasks();renderCards();renderChat();renderHistory();
+ } function renderAll() {
+  document.documentElement.classList.toggle("light-theme",state.theme==="light");
+  $("#noteInput").value=state.note;
+  renderTools();
+  renderTasks();
+  renderNotes();
+  renderCards();
+  renderChat();
+  renderHistory();
+ }
   }
   function setPageLabel(hash) {
     const names = {
