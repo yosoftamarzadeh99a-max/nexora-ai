@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCards();
   renderChat();
   renderHistory();
- }
+  
   }
   function setPageLabel(hash) {
     const names = {
