@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderAll() {
     document.documentElement.classList.toggle("light-theme",state.theme==="light");
     $("#noteInput").value=state.note;
-    renderTools();renderTasks();renderCards();renderChat();
+    renderTools();renderTasks();renderCards();renderChat();renderHistory();
   }
   function setPageLabel(hash) {
     const names={home:"خانه",explore:"کشف ابزارها",favorites:"علاقه‌مندی‌ها",assistant:"دستیار هوشمند",workspace:"فضای کار",settings:"تنظیمات"};
