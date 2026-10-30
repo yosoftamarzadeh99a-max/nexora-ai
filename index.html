@@ -197,9 +197,55 @@
       </section>
 
       <section id="settings" class="content-section section-anchor">
-        <div class="section-heading"><div><div class="eyebrow">کنترل برنامه</div><h2>تنظیمات و داده‌ها</h2></div></div>
-        <div class="panel settings-panel"><div><h3>پشتیبان‌گیری</h3><p class="muted">یادداشت‌ها، کارها، علاقه‌مندی‌ها، فلش‌کارت‌ها و تنظیمات را به فایل JSON صادر یا بازیابی کن.</p></div><div class="inline-actions"><button id="exportData" class="button button-primary">خروجی گرفتن</button><label class="button button-quiet file-button">بازیابی فایل<input id="importData" type="file" accept="application/json,.json" hidden></label></div><p id="backupStatus" class="muted" role="status"></p><hr><div><h3>اطلاعات برنامه</h3><p class="muted">نسخهٔ 1.0 · طراحی‌شده برای موبایل · داده‌های شخصی روی همین مرورگر ذخیره می‌شوند.</p></div><button id="clearLocalData" class="button button-quiet danger">پاک‌کردن داده‌های محلی</button><p class="muted">این عملیات اطلاعات محلی این برنامه را از مرورگر فعلی حذف می‌کند و قابل بازگشت نیست مگر اینکه قبلاً پشتیبان گرفته باشی.</p></div>
+  <div class="section-heading">
+    <div>
+      <div class="eyebrow">کنترل برنامه</div>
+      <h2>تنظیمات NEXORA AI</h2>
+    </div>
+  </div>
+
+  <div class="panel settings-panel">
+    <div>
+      <h3>🎨 ظاهر برنامه</h3>
+      <p class="muted">پوسته روشن یا تاریک را انتخاب کن.</p>
+      <button id="settingsThemeToggle" class="button button-quiet" type="button">
+        تغییر پوسته
+      </button>
+      <p id="themeStatus" class="muted" role="status"></p>
+    </div>
+
+    <hr>
+
+    <div>
+      <h3>پشتیبان‌گیری</h3>
+      <p class="muted">یادداشت‌ها، کارها، علاقه‌مندی‌ها، فلش‌کارت‌ها و تنظیمات را به فایل JSON صادر یا بازیابی کن.</p>
+    </div>
+
+    <div class="inline-actions">
+      <button id="exportData" class="button button-primary">خروجی گرفتن</button>
+      <label class="button button-quiet file-button">
+        بازیابی فایل
+        <input id="importData" type="file" accept="application/json,.json" hidden>
+      </label>
+    </div>
+
+    <p id="backupStatus" class="muted" role="status"></p>
+
+    <hr>
+
+    <div>
+      <h3>اطلاعات برنامه</h3>
+      <p class="muted">نسخهٔ 1.0 · طراحی‌شده برای موبایل · داده‌های شخصی روی همین مرورگر ذخیره می‌شوند.</p>
+    </div>
+
+    <button id="clearLocalData" class="button button-quiet danger">
+      پاک‌کردن داده‌های محلی
+    </button>
+
+    <p class="muted">این عملیات اطلاعات محلی برنامه را حذف می‌کند و بدون نسخه پشتیبان قابل بازگشت نیست.</p>
+  </div>
       </section>
+        
       <footer class="footer"><span class="brand-mark small">N</span><span>NEXORA AI</span><span class="muted">ابزارهای هوشمند، یک فضای یکپارچه.</span></footer>
     </main>
   </div>
