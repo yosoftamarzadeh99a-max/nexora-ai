@@ -81,7 +81,102 @@
         <div class="tools-grid" id="favoritesGrid"></div>
         <p class="muted helper-text" id="favoritesEmpty">با زدن علامت ♡ روی هر ابزار، آن را اینجا ذخیره کن.</p>
       </section>
+<section id="imageLab" class="content-section section-anchor">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">AI IMAGE STUDIO</span>
+      <h2>آزمایشگاه تولید تصویر</h2>
+      <p>ساخت تصاویر با کمک هوش مصنوعی</p>
+    </div>
+    <span class="status-pill">نیازمند اتصال سرویس</span>
+  </div>
+  <div class="panel">
+    <label for="imagePrompt">توضیح تصویر موردنظر</label>
+    <textarea id="imagePrompt" placeholder="تصویری که می‌خواهی بسازی توصیف کن..."></textarea>
+    <button class="button" id="generateImage" type="button">تولید تصویر</button>
+    <div id="imageResult" aria-live="polite"></div>
+  </div>
+</section>
 
+<section id="textLab" class="content-section section-anchor">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">SMART TEXT TOOLS</span>
+      <h2>خلاصه‌سازی و ترجمه</h2>
+      <p>پردازش و درک هوشمند متن</p>
+    </div>
+    <span class="status-pill">نیازمند اتصال سرویس</span>
+  </div>
+  <div class="panel">
+    <textarea id="textInput" placeholder="متن خود را وارد کن..."></textarea>
+    <select id="textAction">
+      <option value="summarize">خلاصه‌سازی متن</option>
+      <option value="translate">ترجمه متن</option>
+    </select>
+    <button class="button" id="processText" type="button">پردازش متن</button>
+    <div id="textResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="codeLab" class="content-section section-anchor">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">AI CODING ASSISTANT</span>
+      <h2>دستیار برنامه‌نویسی</h2>
+      <p>کمک در نوشتن و بررسی کد</p>
+    </div>
+    <span class="status-pill">نیازمند اتصال سرویس</span>
+  </div>
+  <div class="panel">
+    <textarea id="codeInput" placeholder="سؤال یا کد خود را وارد کن..."></textarea>
+    <button class="button" id="analyzeCode" type="button">بررسی کد</button>
+    <pre id="codeResult"></pre>
+  </div>
+</section>
+
+<section id="pdfLab" class="content-section section-anchor">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">DOCUMENT INTELLIGENCE</span>
+      <h2>تحلیل فایل PDF</h2>
+      <p>استخراج و بررسی محتوای اسناد</p>
+    </div>
+    <span class="status-pill">نیازمند اتصال سرویس</span>
+  </div>
+  <div class="panel">
+    <input id="pdfInput" type="file" accept=".pdf,application/pdf">
+    <button class="button" id="analyzePdf" type="button">تحلیل فایل</button>
+    <div id="pdfResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="voiceLab" class="content-section section-anchor">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">VOICE AI</span>
+      <h2>گفت‌وگوی صوتی</h2>
+      <p>تعامل صوتی با دستیار</p>
+    </div>
+    <span class="status-pill">نیازمند اتصال سرویس</span>
+  </div>
+  <div class="panel">
+    <button class="button" id="startVoice" type="button">شروع گفت‌وگوی صوتی</button>
+    <div id="voiceResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="history" class="content-section section-anchor">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">CONVERSATION ARCHIVE</span>
+      <h2>تاریخچه گفتگوها</h2>
+      <p>مدیریت گفتگوهای ذخیره‌شده</p>
+    </div>
+  </div>
+  <div class="panel">
+    <div id="historyList"></div>
+  </div>
+</section>
       <section id="assistant" class="content-section section-anchor">
         <div class="section-heading"><div><div class="eyebrow">دستیار</div><h2>گفت‌وگو با NEXORA</h2></div><span class="status-pill" id="aiStatus">نیازمند اتصال API</span></div>
         <div class="chat-panel">
