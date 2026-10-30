@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if(!data.reply)throw new Error("سرور پاسخی برنگرداند.");
       state.chat.push({role:"assistant",content:data.reply});status.textContent="متصل";status.style.color="var(--green)";
     }catch(err){state.chat.push({role:"assistant",content:`پاسخ هوش مصنوعی در دسترس نیست: ${err.message} برای فعال‌شدن گفت‌وگو، سرور را اجرا و کلید API را در فایل تنظیمات سرور وارد کن.`});status.textContent="نیازمند اتصال API";status.style.color="";}
-    finally{$("#sendMessage").disabled=false;saveState();renderChat();}
+    finally{$("#sendMessage").disabled=false;saveState();renderChat();renderHistory();}
   });
   $("#exportData").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nexora-backup.json";a.click();URL.revokeObjectURL(url);$("#backupStatus").textContent="فایل پشتیبان ساخته شد.";});
   $("#importData").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const imported=JSON.parse(await file.text());if(!imported||typeof imported!=="object")throw Error();state={...defaultState,...imported};saveState();renderAll();$("#backupStatus").textContent="پشتیبان بازیابی شد.";}catch{$("#backupStatus").textContent="فایل پشتیبان معتبر نیست.";}e.target.value="";});
