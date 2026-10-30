@@ -198,7 +198,26 @@ if (noteDelete) {
   $$(".nav-item").forEach(a=>a.addEventListener("click",()=>{$("#sidebar").classList.remove("open");$("#menuToggle").setAttribute("aria-expanded","false");setPageLabel(a.getAttribute("href"));}));
   document.addEventListener("click",e=>{if(innerWidth<=760 && !$("#sidebar").contains(e.target) && !$("#menuToggle").contains(e.target)){$("#sidebar").classList.remove("open");$("#menuToggle").setAttribute("aria-expanded","false");}});
   window.addEventListener("hashchange",()=>setPageLabel(location.hash));
-  $("#themeToggle").addEventListener("click",()=>{state.theme=state.theme==="light"?"dark":"light";saveState();renderAll();});
+  function updateThemeStatus() {
+  const status = $("#themeStatus");
+  if (status) {
+    status.textContent = "پوسته فعلی: " + (state.theme === "light" ? "روشن" : "تاریک");
+  }
+}
+
+$("#themeToggle").addEventListener("click",()=>{
+  state.theme=state.theme==="light"?"dark":"light";
+  saveState();
+  renderAll();
+  updateThemeStatus();
+});
+
+$("#settingsThemeToggle").addEventListener("click",()=>{
+  state.theme=state.theme==="light"?"dark":"light";
+  saveState();
+  renderAll();
+  updateThemeStatus();
+});
   $("#saveNote").addEventListener("click",()=>{
   const note = $("#noteInput").value.trim();
 
