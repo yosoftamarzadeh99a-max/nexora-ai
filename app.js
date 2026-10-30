@@ -192,7 +192,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click",e=>{if(innerWidth<=760 && !$("#sidebar").contains(e.target) && !$("#menuToggle").contains(e.target)){$("#sidebar").classList.remove("open");$("#menuToggle").setAttribute("aria-expanded","false");}});
   window.addEventListener("hashchange",()=>setPageLabel(location.hash));
   $("#themeToggle").addEventListener("click",()=>{state.theme=state.theme==="light"?"dark":"light";saveState();renderAll();});
-  $("#saveNote").addEventListener("click",()=>{state.note=$("#noteInput").value;saveState();$("#noteStatus").textContent="یادداشت ذخیره شد.";toast("یادداشت ذخیره شد.");});
+  $("#saveNote").addEventListener("click",()=>{
+  const note = $("#noteInput").value.trim();
+
+  if (!note) {
+    $("#noteStatus").textContent = "ابتدا یک یادداشت بنویس.";
+    return;
+  }
+
+  state.notes.push(note);
+  state.note = note;
+  $("#noteInput").value = "";
+  saveState();
+  renderNotes();
+
+  $("#noteStatus").textContent = "یادداشت ذخیره شد.";
+  toast("یادداشت ذخیره شد.");
+});
   $("#taskForm").addEventListener("submit",e=>{e.preventDefault();const text=$("#taskInput").value.trim();if(!text)return;state.tasks.push({text,done:false});$("#taskInput").value="";saveState();renderTasks();});
   $("#makePrompt").addEventListener("click",()=>{const subject=$("#promptSubject").value.trim();if(!subject){toast("اول موضوع تصویر را وارد کن.");$("#promptSubject").focus();return;}$("#promptOutput").value=`${subject}، سبک ${$("#promptStyle").value}، ترکیب‌بندی حرفه‌ای، نورپردازی دقیق، جزئیات بالا، کیفیت بالا، بدون نوشته و واترمارک`;$("#promptStatus").textContent="پرامپت ساخته شد؛ برای تولید تصویر آن را در یک ابزار تصویر وارد کن.";});
   $("#copyPrompt").addEventListener("click",async()=>{const val=$("#promptOutput").value;if(!val){toast("اول پرامپت را بساز.");return;}try{await navigator.clipboard.writeText(val);$("#promptStatus").textContent="پرامپت کپی شد.";}catch{$("#promptOutput").select();const ok=document.execCommand("copy");$("#promptStatus").textContent=ok?"پرامپت کپی شد.":"متن را دستی کپی کن.";}});
