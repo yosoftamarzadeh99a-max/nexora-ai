@@ -3,7 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const STORAGE_KEY = "nexora-ai-v1";
-  const defaultState = {favorites:[],note:"",tasks:[],flashcards:[],theme:"dark",chat:[]};
+  const defaultState = {
+  favorites: [],
+  note: "",
+  notes: [],
+  tasks: [],
+  flashcards: [],
+  theme: "dark",
+  chat: []
+};
   let state = loadState();
   let selectedCategory = "all", deferredInstall = null, activeFlash = 0, showAnswer = false, toastTimer;
 
