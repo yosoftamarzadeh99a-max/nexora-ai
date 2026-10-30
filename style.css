@@ -33,3 +33,57 @@
   border-radius: 8px;
   cursor: pointer;
 }
+/* Light theme readability fixes */
+.light-theme .button-quiet {
+  background: #edf5ef;
+  color: #173522;
+}
+
+.light-theme .category-chip {
+  color: #45634e;
+}
+
+.light-theme .category-chip.selected {
+  color: #087b3a;
+}
+
+.light-theme .tool-icon,
+.light-theme .tool-tag {
+  background: #e5f4e9;
+  color: #087b3a;
+  border-color: #c5e5ce;
+}
+
+.light-theme .assistant-message {
+  background: #edf7ef;
+  border-color: #cce5d2;
+}
+
+.light-theme .user-message {
+  background: #e1f2e6;
+  border-color: #b9ddc4;
+}
+
+.light-theme .message b {
+  color: #087b3a;
+}
+
+.light-theme .field,
+.light-theme .search-box {
+  color: #173522;
+}
+
+.light-theme .flashcard-viewer {
+  border-color: #c5e5ce;
+  color: #173522;
+}
+
+.light-theme .note-item {
+  background: #f8fcf9;
+  border-color: #d4e4d8;
+}
+
+.light-theme .note-item button {
+  background: #e5f4e9;
+  color: #087b3a;
+}
