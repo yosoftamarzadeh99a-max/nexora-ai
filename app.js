@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderNotes();
   renderCards();
   renderChat();
-  renderHistory();
+  renderHistory();updateThemeStatus();
   
   }
   function setPageLabel(hash) {
