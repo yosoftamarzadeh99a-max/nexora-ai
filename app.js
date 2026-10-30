@@ -110,9 +110,33 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTools();renderTasks();renderCards();renderChat();renderHistory();
   }
   function setPageLabel(hash) {
-    const names={home:"خانه",explore:"کشف ابزارها",favorites:"علاقه‌مندی‌ها",assistant:"دستیار هوشمند",workspace:"فضای کار",settings:"تنظیمات"};
-    $("#pageLabel").textContent=names[(hash||"#home").slice(1)]||"خانه";
-    $$(".nav-item").forEach(a=>a.classList.toggle("active",a.getAttribute("href")=== (hash||"#home")));
+    const names = {
+        home: "خانه",
+        explore: "کشف ابزارها",
+        favorites: "علاقه‌مندی‌ها",
+        assistant: "دستیار هوشمند",
+        imageLab: "تولید تصویر",
+        textLab: "خلاصه‌سازی و ترجمه",
+        codeLab: "دستیار برنامه‌نویسی",
+        pdfLab: "تحلیل فایل PDF",
+        voiceLab: "گفت‌وگوی صوتی",
+        history: "تاریخچه گفتگوها",
+        workspace: "فضای کار",
+        settings: "تنظیمات"
+    };
+
+    const currentHash = hash || "#home";
+
+    $("#pageLabel").textContent =
+        names[currentHash.slice(1)] || "خانه";
+
+    $$(".nav-item").forEach(a =>
+        a.classList.toggle(
+            "active",
+            a.getAttribute("href") === currentHash
+        )
+    );
+  }
   }
 
   $("#searchInput").addEventListener("input",renderTools);
