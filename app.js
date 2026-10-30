@@ -70,6 +70,40 @@ document.addEventListener("DOMContentLoaded", () => {
     box.innerHTML=saved.map(m=>`<div class="message ${m.role==="user"?"user-message":"assistant-message"}"><b>${m.role==="user"?"شما":"NEXORA"}</b><p>${escapeHtml(m.content)}</p></div>`).join("");
     box.scrollTop=box.scrollHeight;
   }
+ function renderHistory() {
+  const box = $("#historyList");
+
+  if (!state.chat.length) {
+    box.innerHTML = '<p class="muted">هنوز گفت‌وگویی ذخیره نشده است.</p>';
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="history-header">
+      <strong>گفت‌وگوی فعلی</strong>
+      <button class="button button-quiet" id="clearHistory" type="button">
+        پاک‌کردن تاریخچه
+      </button>
+    </div>
+    <div class="history-messages">
+      ${state.chat.map(m => `
+        <article class="message ${m.role === "user" ? "user-message" : "assistant-message"}">
+          <b>${m.role === "user" ? "شما" : "NEXORA"}</b>
+          <p>${escapeHtml(m.content)}</p>
+        </article>
+      `).join("")}
+    </div>
+  `;
+
+  $("#clearHistory").addEventListener("click", () => {
+    if (!confirm("تاریخچه گفتگو پاک شود؟")) return;
+    state.chat = [];
+    saveState();
+    renderChat();
+    renderHistory();
+    toast("تاریخچه پاک شد.");
+  });
+ } 
   function renderAll() {
     document.documentElement.classList.toggle("light-theme",state.theme==="light");
     $("#noteInput").value=state.note;
