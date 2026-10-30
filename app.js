@@ -66,7 +66,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderChat() {
     const box=$("#chatMessages");
     const saved=state.chat.slice(-30);
-    if(!saved.length)return;
+    if (!saved.length) {
+  box.innerHTML = `
+    <div class="message assistant-message">
+      <b>NEXORA</b>
+      <p>سلام! من NEXORA هستم. آماده‌ام تا در انجام کارها کمکت کنم.</p>
+    </div>
+  `;
+  return;
+    }
     box.innerHTML=saved.map(m=>`<div class="message ${m.role==="user"?"user-message":"assistant-message"}"><b>${m.role==="user"?"شما":"NEXORA"}</b><p>${escapeHtml(m.content)}</p></div>`).join("");
     box.scrollTop=box.scrollHeight;
   }
