@@ -1,4 +1,4 @@
-const CACHE_NAME = "nexora-ai-static-v3";
+const CACHE_NAME = "nexora-ai-static-v4";
 const CORE = ["./", "./index.html", "./style.css", "./app.js", "./manifest.webmanifest", "./icons/icon.svg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
