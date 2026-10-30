@@ -64,6 +64,21 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderTasks() {
     $("#taskList").innerHTML=state.tasks.map((t,i)=>`<li class="task-item ${t.done?"done":""}"><input type="checkbox" data-task-toggle="${i}" ${t.done?"checked":""} aria-label="تغییر وضعیت کار"><span>${escapeHtml(t.text)}</span><button type="button" data-task-delete="${i}" aria-label="حذف کار">×</button></li>`).join("");
   }
+  function renderNotes() {
+  const box = $("#notesList");
+
+  if (!state.notes.length) {
+    box.innerHTML = '<p class="muted">هنوز یادداشتی ثبت نشده است.</p>';
+    return;
+  }
+
+  box.innerHTML = state.notes.map((note, index) => `
+    <article class="note-item">
+      <p>${escapeHtml(note)}</p>
+      <button type="button" data-note-delete="${index}">حذف</button>
+    </article>
+  `).join("");
+  }
   function renderCards() {
     const c=state.flashcards;
     if(!c.length){$("#flashcardViewer").innerHTML='<p class="muted">هنوز فلش‌کارتی نساخته‌ای.</p>';}
