@@ -177,6 +177,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }catch(err){state.chat.push({role:"assistant",content:`پاسخ هوش مصنوعی در دسترس نیست: ${err.message} برای فعال‌شدن گفت‌وگو، سرور را اجرا و کلید API را در فایل تنظیمات سرور وارد کن.`});status.textContent="نیازمند اتصال API";status.style.color="";}
     finally{$("#sendMessage").disabled=false;saveState();renderChat();renderHistory();}
   });
+    $("#processText").addEventListener("click", async () => {
+    const input = $("#textInput");
+    const result = $("#textResult");
+    const button = $("#processText");
+
+    const text = input.value.trim();
+    const action = $("#textAction").value;
+
+    if (!text) {
+      result.textContent = "ابتدا متن موردنظر را وارد کن.";
+      input.focus();
+      return;
+    }
+
+    const prompt = action === "summarize"
+      ? "متن زیر را به زبان فارسی، دقیق و روان خلاصه کن:\n\n" + text
+      : "متن زیر را به زبان فارسی ترجمه کن. اگر متن فارسی است، آن را به انگلیسی ترجمه کن:\n\n" + text;
+
+    button.disabled = true;
+    result.textContent = "در حال پردازش متن...";
+
+    try {
+      const response = await fetch(
+        "https://nexora-ai-1-y8x8.onrender.com/api/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: prompt })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "خطا در پردازش متن");
+      }
+
+      if (!data.reply) {
+        throw new Error("پاسخی از سرور دریافت نشد.");
+      }
+
+      result.textContent = data.reply;
+
+    } catch (error) {
+      result.textContent = "خطا: " + error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
   $("#exportData").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nexora-backup.json";a.click();URL.revokeObjectURL(url);$("#backupStatus").textContent="فایل پشتیبان ساخته شد.";});
   $("#importData").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const imported=JSON.parse(await file.text());if(!imported||typeof imported!=="object")throw Error();state={...defaultState,...imported};saveState();renderAll();$("#backupStatus").textContent="پشتیبان بازیابی شد.";}catch{$("#backupStatus").textContent="فایل پشتیبان معتبر نیست.";}e.target.value="";});
   $("#clearLocalData").addEventListener("click",()=>{if(!confirm("همه اطلاعات محلی NEXORA AI از این مرورگر حذف شود؟"))return;localStorage.removeItem(STORAGE_KEY);state={...defaultState};activeFlash=0;showAnswer=false;renderAll();$("#backupStatus").textContent="داده‌های محلی پاک شدند.";});
