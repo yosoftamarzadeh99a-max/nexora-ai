@@ -314,4 +314,48 @@ $("#settingsThemeToggle").addEventListener("click",()=>{
   if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
   if(location.protocol==="file:")$("#connectionStatus").textContent="پیش‌نمایش محلی";
   setPageLabel(location.hash);renderAll();
+    $("#analyzePdf").addEventListener("click", async () => {
+    const input = $("#pdfInput");
+    const result = $("#pdfResult");
+    const button = $("#analyzePdf");
+    const file = input.files[0];
+
+    if (!file) {
+      result.textContent = "ابتدا یک فایل PDF انتخاب کن.";
+      return;
+    }
+
+    if (!window.pdfjsLib) {
+      result.textContent = "کتابخانه PDF بارگذاری نشده است. اتصال اینترنت را بررسی کن.";
+      return;
+    }
+
+    button.disabled = true;
+    result.textContent = "در حال خواندن فایل PDF...";
+
+    try {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      const data = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data }).promise;
+      let extractedText = "";
+
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+        const page = await pdf.getPage(pageNumber);
+        const content = await page.getTextContent();
+        const pageText = content.items.map(item => item.str).join(" ");
+        extractedText += `\n\nصفحه ${pageNumber}:\n${pageText}`;
+      }
+
+      result.textContent = extractedText.trim()
+        ? `فایل با موفقیت خوانده شد.\nتعداد صفحات: ${pdf.numPages}\n\n${extractedText}`
+        : "متنی از این PDF استخراج نشد.";
+
+    } catch (error) {
+      result.textContent = "خطا در خواندن PDF: " + error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
 });
