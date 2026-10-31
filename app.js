@@ -373,4 +373,35 @@ $("#settingsThemeToggle").addEventListener("click",()=>{
     toast("کپی خودکار انجام نشد؛ متن را دستی انتخاب کن.");
   }
 });
+$("#analyzeCode").addEventListener("click", () => {
+  const code = $("#codeInput").value.trim();
+  const result = $("#codeResult");
+
+  if (!code) {
+    result.textContent = "ابتدا کد خود را وارد کن.";
+    return;
+  }
+
+  const lines = code.split("\n").length;
+  const checks = [];
+
+  if ((code.match(/{/g) || []).length !== (code.match(/}/g) || []).length) {
+    checks.push("تعداد آکولادهای باز و بسته برابر نیست.");
+  }
+
+  if ((code.match(/\(/g) || []).length !== (code.match(/\)/g) || []).length) {
+    checks.push("تعداد پرانتزهای باز و بسته برابر نیست.");
+  }
+
+  if (checks.length === 0) {
+    result.textContent =
+      "بررسی اولیه انجام شد.\n\n" +
+      "تعداد خطوط: " + lines +
+      "\nساختار اولیه آکولادها و پرانتزها صحیح است.\n\n" +
+      "توجه: این بررسی جایگزین اجرای واقعی کد یا تحلیل هوش مصنوعی نیست.";
+  } else {
+    result.textContent =
+      "موارد قابل بررسی:\n\n" + checks.join("\n");
+  }
+});  
 });
