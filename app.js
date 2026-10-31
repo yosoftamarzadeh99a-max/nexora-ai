@@ -388,4 +388,19 @@ $("#settingsThemeToggle").addEventListener("click",()=>{
     toast("کپی خودکار انجام نشد؛ متن را دستی انتخاب کن.");
   }
 });
+$("#copyPdfText").addEventListener("click", async () => {
+  const text = $("#pdfResult").textContent.trim();
+
+  if (!text || text.startsWith("در حال خواندن") || text.startsWith("خطا")) {
+    toast("ابتدا یک فایل PDF را تحلیل کن.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("متن PDF کپی شد.");
+  } catch {
+    toast("کپی خودکار انجام نشد؛ متن را دستی انتخاب کن.");
+  }
+});  
 });
