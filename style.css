@@ -163,4 +163,25 @@
 .light-theme .content-section,
 .light-theme .hero {
   border-color: #d4e4d8;
+  #pdfResult {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  line-height: 2.1;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 550px;
+  overflow-y: auto;
+  direction: rtl;
+  text-align: right;
+  font-size: 14px;
 }
+
+#analyzePdf:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
